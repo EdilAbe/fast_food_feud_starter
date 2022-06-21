@@ -1,7 +1,12 @@
 import * as React from "react"
 // IMPORT ANY NEEDED COMPONENTS HERE
+import Header from "./components/Header/Header";
+import Instructions from "./components/Instructions/Instructions";
+import Chip from "./components/Chip/Chip";
+import { useState } from "react";
 import { createDataSet } from "./data/dataset"
 import "./App.css"
+
 
 // don't move this!
 export const appInfo = {
@@ -21,27 +26,54 @@ export const appInfo = {
 const { data, categories, restaurants } = createDataSet()
 
 export function App() {
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedResturant, setSelectedResturant] = useState(null)
+  //const [selectedMenu, setSelectedMenu] = useState(null)
+
+  const handleCategory = (cat) => { 
+    setSelectedCategory(cat);
+}
+
+const handleResturant = (res) => {
+    setSelectedResturant(res);
+} 
+
+const handleMenu = (cat) => {
+    setSelectedMenu(cat);
+} 
+
+var currentMenuItems = data.filter((el) => {return el.food_category === selectedCategory && el.restaurant === selectedResturant});
+
   return (
     <main className="App">
       {/* CATEGORIES COLUMN */}
       <div className="CategoriesColumn col">
         <div className="categories options">
           <h2 className="title">Categories</h2>
-          {/* YOUR CODE HERE */}
+
+          {categories.map((category, idx) => (
+          <Chip key = {idx} label = {category} isActive={category === selectedCategory} onClick = {() => {handleCategory(category)}}/>))}
         </div>
       </div>
 
+      
       {/* MAIN COLUMN */}
-      <div className="container">
-        {/* HEADER GOES HERE */}
 
-        {/* RESTAURANTS ROW */}
+      <div className="container">
+      {<Header  title = {appInfo.title} tagline = {appInfo.tagline} description = {appInfo.description} />}
+      
+      
         <div className="RestaurantsRow">
           <h2 className="title">Restaurants</h2>
-          <div className="restaurants options">{/* YOUR CODE HERE */}</div>
+          <div className="restaurants options">
+            {restaurants.map((restaurant, idx) => (
+          <Chip className = "RestaurantsRow" key = {idx} isActive= {restaurant === selectedResturant} label={restaurant} onClick ={() => {handleResturant(restaurant)}}/>))}
+        </div>
         </div>
 
-        {/* INSTRUCTIONS GO HERE */}
+        
+        {< Instructions instructions = {appInfo.instructions.start}/>}
+      
 
         {/* MENU DISPLAY */}
         <div className="MenuDisplay display">
